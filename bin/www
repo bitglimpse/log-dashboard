@@ -7,10 +7,6 @@
 var app = require('../app');
 var debug = require('debug')('log-dashboard:server');
 var http = require('http');
-const WebSocket = require('ws');
-const fs = require('fs');
-var { settings } = require('../services/settings-service.js');
-
 
 /**
  * Get port from environment and store in Express.
@@ -25,8 +21,6 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-const wss = new WebSocket.Server({ server });
-
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -34,21 +28,6 @@ const wss = new WebSocket.Server({ server });
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-wss.on('connection', (ws) => {
-  ws.on('message', (message) => {
-    var filePath = message
-    fs.watch(filePath, (eventType, filename) => {
-      fs.createReadStream(filePath).on("data", chunk => {
-        var lines = chunk.toString().split("\n")
-        var filteredLogs = lines.filter(line => !line.includes(settings.user.defaultFilter))
-        // Default to newestFirst. Reverse the array so we're sending the newest entries first
-        filteredLogs = settings.user.sortOrder === "oldestFirst" ? filteredLogs : filteredLogs.reverse()
-        ws.send(filteredLogs.toString().split(",").join("\n"))
-      })
-    })
-  });
-});
 
 /**
  * Normalize a port into a number, string, or false.

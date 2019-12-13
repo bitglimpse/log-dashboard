@@ -9,7 +9,7 @@ fileService.setcwd(getDefaultDir());
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Log Dashboard', logFile: req.query.logFile });
+  res.render('index', { title: 'Log Dashboard' });
 });
 
 /* GET select file. */
@@ -19,27 +19,8 @@ router.get('/select-file', function(req, res, next) {
 
 /* GET settings. */
 router.get('/settings', function(req, res, next) {
-  res.render('settings', { title: 'Settings', settings });
+  res.render('settings', { title: 'Settings' });
 });
-
-router.post('/settings', [
-  check("defaultDir  ").not().isEmpty(),
-  body("defaultDir").custom(dirPath => {
-    if (!isValidDir(dirPath)) {
-      throw new Error("Default directory is not valid")
-    }
-    return true
-  })
-], function (req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.render('settings', { title: 'Settings', errors: errors.array()[0], settings });
-  }
-  const body = req.body
-  settings.user = req.body
-  writeSettings()
-  res.render('settings', { message: 'Settings Saved', title: 'Settings', settings });
-})
 
 /* GET files. */
 router.get('/files', fileService.get)

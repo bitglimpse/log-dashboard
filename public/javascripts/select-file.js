@@ -2,16 +2,16 @@ $(document).ready(function(){
   
   var currentPath = null;
   var options = {
-      "paging": false,
-      "autoWidth": false,
-      "scrollY": "250px",
-      "scrollCollapse": true,
-      "createdRow" : onRowCreated, 
-      "columns": [
-        { "data": null,
-          "render": createRow
-        }
-      ]
+    "paging": false,
+    "autoWidth": false,
+    "scrollY": "250px",
+    "scrollCollapse": true,
+    "createdRow" : onRowCreated, 
+    "columns": [
+      { "data": null,
+        "render": createRow
+      }
+    ]
   };
 
   var table = $("#fileTable").DataTable(options);
@@ -51,9 +51,9 @@ $(document).ready(function(){
     var idx = currentPath.lastIndexOf("/");
     var path = currentPath.substr(0, idx);
     $.get('/files?path='+ path).then(function(data){
-        table.clear();
-        table.rows.add(data).draw();
-        currentPath = path;
+      table.clear();
+      table.rows.add(data).draw();
+      currentPath = path;
     });
   });
 });
